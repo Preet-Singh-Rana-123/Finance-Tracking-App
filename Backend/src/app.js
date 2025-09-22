@@ -1,8 +1,8 @@
 import dotenv from 'dotenv';
 import express from 'express';
-import connectDB from './src/config/db.js';
+import connectDB from './config/db.js';
 
-import authRoutes from './src/routes/authRoutes.js';
+import authRoutes from './routes/authRoutes.js';
 
 dotenv.config();
 
@@ -17,5 +17,5 @@ app.use(express.urlencoded);
 app.use('/auth', authRoutes);
 
 app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+  console.log(`Server is running http://localhost:${port}`);
 });
