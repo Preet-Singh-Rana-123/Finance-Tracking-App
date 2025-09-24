@@ -3,11 +3,13 @@ import { BudgetProgressBar } from '../components/BudgetProgressBar';
 import { DoughnutChart } from '../components/DoughnutChart';
 import { HomeCard } from '../components/HomeCard';
 import { LineChart } from '../components/LineChart';
+import { Navbar } from '../components/Navbar';
 import { TipCard } from '../components/TipCard';
 
 export const Dashboard = () => {
   return (
     <>
+      <Navbar />
       <div className="my-[2rem] flex flex-col justify-center items-center">
         <h2 className="font-bold text-4xl text-sky-500 mb-2">
           Welcome to Financial Tracker App!!

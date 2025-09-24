@@ -1,8 +1,9 @@
-import dotenv from 'dotenv';
-import express from 'express';
-import connectDB from './config/db.js';
+const dotenv = require('dotenv');
+const express = require('express');
+const cors = require('cors');
 
-import authRoutes from './routes/authRoutes.js';
+const connectDB = require('./config/db');
+const authRoutes = require('./routes/authRoutes');
 
 dotenv.config();
 
@@ -11,9 +12,12 @@ const port = process.env.PORT;
 
 connectDB();
 
-app.use(express.json);
-app.use(express.urlencoded);
+// Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
+// Routes
 app.use('/auth', authRoutes);
 
 app.listen(port, () => {
