@@ -8,9 +8,9 @@ const TransanctionSchema = mongoose.Schema(
       required: true,
     },
     type: { type: String, enum: ['income', 'expense'], required: true },
-    category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category' },
+    category: { type: String },
     amount: { type: Number, required: true },
-    discription: { type: String },
+    description: { type: String },
     paymentMethod: {
       type: String,
       enum: ['cash', 'card', 'bank', 'upi', 'other'],
