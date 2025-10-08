@@ -6,6 +6,7 @@ const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const chartRoutes = require('./routes/chartRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
+const budgetRoutes = require('./routes/budgetRoutes');
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ app.use(cors());
 app.use('/auth', authRoutes);
 app.use('/chart', chartRoutes);
 app.use('/category', categoryRoutes);
+app.use('/budget', budgetRoutes);
 
 app.listen(port, () => {
   console.log(`Server is running http://localhost:${port}`);
