@@ -9,6 +9,7 @@ const categoryRoutes = require('./routes/categoryRoutes');
 const budgetRoutes = require('./routes/budgetRoutes');
 const transactionRoutes = require('./routes/transactionRoutes');
 const goalRoutes = require('./routes/goalRoutes');
+const aiInsightRoutes = require('./routes/aiInsightRoutes');
 
 dotenv.config();
 
@@ -29,6 +30,7 @@ app.use('/category', categoryRoutes);
 app.use('/budget', budgetRoutes);
 app.use('/transaction', transactionRoutes);
 app.use('/goal', goalRoutes);
+app.use('/ai', aiInsightRoutes);
 
 app.listen(port, () => {
   console.log(`Server is running http://localhost:${port}`);
