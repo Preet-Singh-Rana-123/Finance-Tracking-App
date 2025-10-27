@@ -1,17 +1,11 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const insightShema = mongoose.Schema(
-  {
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Users',
-      required: true,
-    },
-    summary: { type: Object },
-    insightText: { type: String, required: true },
-    source: { type: String, enum: ['openai', 'gemini'], default: 'openai' },
-  },
-  { timestamps: true },
-);
+const insightShema = mongoose.Schema({
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    insight: String,
+    tone: String,
+    html: String,
+    data: Object,
+});
 
-module.exports = mongoose.model('Insight', insightShema);
+module.exports = mongoose.model("Insight", insightShema);
