@@ -9,6 +9,7 @@ import { AiInsight } from "./pages/AiInsight";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { syncUserAcrossTabs } from "./redux/authSlice";
+import { Register } from "./pages/Register";
 
 function App() {
     const dispatch = useDispatch();
@@ -49,6 +50,7 @@ function App() {
                         }
                     />
                     <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
                 </Routes>
             </Router>
         </>

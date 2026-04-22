@@ -23,7 +23,7 @@ export const Login = () => {
         try {
             const res = await loginApi(formData);
             const token = res.data.token;
-            dispatch(loginSuccess(token));
+            dispatch(loginSuccess({ token }));
             navigate("/");
         } catch (err) {
             console.log(err);
