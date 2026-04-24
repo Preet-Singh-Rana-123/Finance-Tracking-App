@@ -31,4 +31,10 @@ transactionRouter.get(
     transactionController.getExpense,
 );
 
+transactionRouter.get(
+    "/get-balance",
+    authenticateToken,
+    transactionController.getBalance,
+);
+
 module.exports = transactionRouter;
