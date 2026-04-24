@@ -35,17 +35,31 @@ exports.deleteTransaction = async (req, res, next) => {
     try {
         const { id } = req.params;
         await Transactions.findByIdAndDelete(id);
-        res.json({message: "deleted successfully"});
+        res.json({ message: "deleted successfully" });
     } catch (err) {
         console.log(err);
         res.status(500).json({ message: "internal error" });
     }
 };
 
-exports.searchByDate = async (req,res,next) => {
-    try{
-    }catch (err){
+exports.searchByDate = async (req, res, next) => {
+    try {
+    } catch (err) {
         console.log(err);
         res.status(500).json({ message: "internal error" });
     }
-}
+};
+
+exports.getIncome = async (req, res, next) => {
+    try {
+        const user = req.user.id;
+        const transactions = await Transactions.find({ user: user });
+        const income = transactions
+            .filter((t) => t.type === "income")
+            .reduce((sum, t) => sum + t.amount, 0);
+        res.json(income);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: "internal error" });
+    }
+};
