@@ -25,4 +25,10 @@ transactionRouter.get(
     transactionController.getIncome,
 );
 
+transactionRouter.get(
+    "/get-expense",
+    authenticateToken,
+    transactionController.getExpense,
+);
+
 module.exports = transactionRouter;

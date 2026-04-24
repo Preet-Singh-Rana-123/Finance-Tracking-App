@@ -57,7 +57,21 @@ exports.getIncome = async (req, res, next) => {
         const income = transactions
             .filter((t) => t.type === "income")
             .reduce((sum, t) => sum + t.amount, 0);
-        res.json(income);
+        res.json({ income });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: "internal error" });
+    }
+};
+
+exports.getExpense = async (req, res, next) => {
+    try {
+        const user = req.user.id;
+        const transactions = await Transactions.find({ user: user });
+        const expense = transactions
+            .filter((t) => t.type === "expense")
+            .reduce((sum, t) => sum + t.amount, 0);
+        res.json({ expense });
     } catch (err) {
         console.log(err);
         res.status(500).json({ message: "internal error" });
