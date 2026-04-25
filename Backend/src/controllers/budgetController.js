@@ -59,3 +59,18 @@ exports.deleteBudget = async (req, res, next) => {
         res.status(500).json({ message: "internal error" });
     }
 };
+
+exports.getCategorySpend = async (req, res, next) => {
+    try {
+        const user = req.user.id;
+        const budget = await Budget.find({ user: user });
+        const result = budget.map((b) => ({
+            category: b.category,
+            spent: b.spent,
+        }));
+        res.json({ result });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: "internal error" });
+    }
+};
