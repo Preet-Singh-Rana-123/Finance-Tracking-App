@@ -7,12 +7,14 @@ import { LineChart } from "../components/LineChart";
 import { Navbar } from "../components/Navbar";
 import { TipCard } from "../components/TipCard";
 import { getCardInfo } from "../api/transactionApi";
+import { getAiTip } from "../api/aiInsightApi";
 
 export const Dashboard = () => {
     const [budget, setBudget] = useState(0);
     const [expense, setExpense] = useState(0);
     const [income, setIncome] = useState(0);
     const [balance, setBalace] = useState(0);
+    const [tip, setTip] = useState("Geting your tip...");
 
     const fetchCardInfo = async () => {
         try {
@@ -27,8 +29,19 @@ export const Dashboard = () => {
         }
     };
 
+    const fetchAiTip = async () => {
+        try {
+            const response = await getAiTip();
+            const data = response.data;
+            setTip(data.tip);
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
     useEffect(() => {
         fetchCardInfo();
+        fetchAiTip();
     }, []);
 
     return (
@@ -43,22 +56,10 @@ export const Dashboard = () => {
                 </p>
             </div>
             <div className="flex justify-between mx-[1rem]">
-                <HomeCard
-                    category={"Current Balance"}
-                    balance={balance}
-                />
-                <HomeCard
-                    category={"Monthly Income"}
-                    balance={income}
-                />
-                <HomeCard
-                    category={"Monthly Expenses"}
-                    balance={expense}
-                />
-                <HomeCard
-                    category={"Monthly Budget"}
-                    balance={budget}
-                />
+                <HomeCard category={"Current Balance"} balance={balance} />
+                <HomeCard category={"Monthly Income"} balance={income} />
+                <HomeCard category={"Monthly Expenses"} balance={expense} />
+                <HomeCard category={"Monthly Budget"} balance={budget} />
             </div>
 
             <BudgetProgressBar
@@ -67,7 +68,7 @@ export const Dashboard = () => {
                 total={income}
             />
 
-            <TipCard />
+            <TipCard tip={tip} />
 
             <div className="bg-white rounded-2xl shadow-lg p-4 flex justify-center items-center flex-col mx-[2rem] h-[350px]">
                 <h2 className="text-slate-700 font-semibold mb-2">
