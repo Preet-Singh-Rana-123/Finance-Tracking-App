@@ -37,4 +37,10 @@ transactionRouter.get(
     transactionController.getBalance,
 );
 
+transactionRouter.get(
+    "/get-dashboard-card-info",
+    authenticateToken,
+    transactionController.getDashboardCardInfo,
+);
+
 module.exports = transactionRouter;

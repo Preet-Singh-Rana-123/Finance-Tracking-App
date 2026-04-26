@@ -1,4 +1,5 @@
 const Transactions = require("../models/Transactions");
+const Budget = require("../models/Budget");
 
 exports.postTransaction = async (req, res, next) => {
     try {
@@ -91,6 +92,42 @@ exports.getBalance = async (req, res, next) => {
         const balance = income > expense ? income - expense : 0;
         res.json({ balance });
     } catch {
+        console.log(err);
+        res.status(500).json({ message: "internal error" });
+    }
+};
+
+exports.getIncomeAndExpense = async (req, res, next) => {
+    try {
+        const user = req.user.id;
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: "internal error" });
+    }
+};
+
+exports.getDashboardCardInfo = async (req, res, next) => {
+    try {
+        const user = req.user.id;
+        const transactions = await Transactions.find({ user: user });
+        const expense = transactions
+            .filter((t) => t.type === "expense")
+            .reduce((sum, t) => sum + t.amount, 0);
+        const income = transactions
+            .filter((t) => t.type === "income")
+            .reduce((sum, t) => sum + t.amount, 0);
+        const balance = income > expense ? income - expense : 0;
+        const budget = await Budget.find({ user: user });
+        const monthlyBudget = budget.reduce((sum, b) => sum + b.limit, 0);
+
+        const result = {
+            balance: balance,
+            expense: expense,
+            income: income,
+            budget: monthlyBudget,
+        };
+        res.json(result);
+    } catch (err) {
         console.log(err);
         res.status(500).json({ message: "internal error" });
     }
