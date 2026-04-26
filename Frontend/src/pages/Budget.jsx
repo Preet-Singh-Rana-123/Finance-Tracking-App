@@ -19,7 +19,6 @@ export const Budget = () => {
     const fetchBudget = async () => {
         try {
             const response = await getBudgetApi();
-            console.log(response.data);
             setBudgets(response.data);
         } catch (err) {
             console.log(err);

@@ -11,7 +11,6 @@ export const Transaction = () => {
 
     const fetchTransaction = async () => {
         const response = await getTransactionApi();
-        console.log(response.data);
         setTransactions(response.data);
     };
 

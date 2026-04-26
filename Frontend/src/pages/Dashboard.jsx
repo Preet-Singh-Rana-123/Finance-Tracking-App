@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { BarChart } from "../components/BarChart";
 import { BudgetProgressBar } from "../components/BudgetProgressBar";
 import { DoughnutChart } from "../components/DoughnutChart";
@@ -5,8 +6,31 @@ import { HomeCard } from "../components/HomeCard";
 import { LineChart } from "../components/LineChart";
 import { Navbar } from "../components/Navbar";
 import { TipCard } from "../components/TipCard";
+import { getCardInfo } from "../api/transactionApi";
 
 export const Dashboard = () => {
+    const [budget, setBudget] = useState(0);
+    const [expense, setExpense] = useState(0);
+    const [income, setIncome] = useState(0);
+    const [balance, setBalace] = useState(0);
+
+    const fetchCardInfo = async () => {
+        try {
+            const response = await getCardInfo();
+            const data = response.data;
+            setBudget(data.budget);
+            setExpense(data.expense);
+            setBalace(data.balance);
+            setIncome(data.income);
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    useEffect(() => {
+        fetchCardInfo();
+    }, []);
+
     return (
         <>
             <Navbar />
@@ -21,30 +45,26 @@ export const Dashboard = () => {
             <div className="flex justify-between mx-[1rem]">
                 <HomeCard
                     category={"Current Balance"}
-                    balance={"$12,450.75"}
-                    trend={"+2.3% from last month"}
+                    balance={balance}
                 />
                 <HomeCard
                     category={"Monthly Income"}
-                    balance={"$12,450.75"}
-                    trend={"+2.3% from last month"}
+                    balance={income}
                 />
                 <HomeCard
                     category={"Monthly Expenses"}
-                    balance={"$12,450.75"}
-                    trend={"+2.3% from last month"}
+                    balance={expense}
                 />
                 <HomeCard
                     category={"Monthly Budget"}
-                    balance={"$12,450.75"}
-                    trend={"+2.3% from last month"}
+                    balance={budget}
                 />
             </div>
 
             <BudgetProgressBar
                 title={"Budget Progress (This Month)"}
-                used={50}
-                total={100}
+                used={expense}
+                total={income}
             />
 
             <TipCard />
