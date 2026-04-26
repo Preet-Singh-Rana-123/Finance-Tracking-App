@@ -1,5 +1,6 @@
 const Transactions = require("../models/Transactions");
 const Budget = require("../models/Budget");
+const { default: mongoose } = require("mongoose");
 
 exports.postTransaction = async (req, res, next) => {
     try {
@@ -100,6 +101,56 @@ exports.getBalance = async (req, res, next) => {
 exports.getIncomeAndExpense = async (req, res, next) => {
     try {
         const user = req.user.id;
+        const currentYear = new Date().getFullYear();
+
+        const result = await Transactions.aggregate([
+            {
+                $match: {
+                    user: new mongoose.Types.ObjectId(user),
+                    date: {
+                        $gte: new Date(`${currentYear}-01-01`),
+                        $lte: new Date(`${currentYear}-12-31`),
+                    },
+                },
+            },
+            {
+                $group: {
+                    _id: { month: { $month: "$date" }, type: "$type" },
+                    total: { $sum: "$amount" },
+                },
+            },
+        ]);
+
+        const monthlyIncome = new Array(12).fill(0);
+        const monthlyExpense = new Array(12).fill(0);
+
+        result.forEach((item) => {
+            const monthlyIndex = item._id.month - 1;
+            if (item._id.type === "income") {
+                monthlyIncome[monthlyIndex] = item.total;
+            } else if (item._id.type === "expense") {
+                monthlyExpense[monthlyIndex] = item.total;
+            }
+        });
+
+        res.json({
+            income: monthlyIncome,
+            expense: monthlyExpense,
+            labels: [
+                "Jan",
+                "Feb",
+                "Mar",
+                "Apr",
+                "May",
+                "Jun",
+                "Jul",
+                "Aug",
+                "Sep",
+                "Oct",
+                "Nov",
+                "Dec",
+            ],
+        });
     } catch (err) {
         console.log(err);
         res.status(500).json({ message: "internal error" });
@@ -109,7 +160,20 @@ exports.getIncomeAndExpense = async (req, res, next) => {
 exports.getDashboardCardInfo = async (req, res, next) => {
     try {
         const user = req.user.id;
-        const transactions = await Transactions.find({ user: user });
+
+        const startofmonth = new Date();
+        startofmonth.setDate(1);
+        startofmonth.setHours(0, 0, 0, 0);
+
+        const endofmonth = new Date();
+        endofmonth.setMonth(endofmonth.getMonth() + 1);
+        endofmonth.setDate(0);
+        endofmonth.setHours(23, 59, 59, 999);
+
+        const transactions = await Transactions.find({
+            user: user,
+            date: { $gte: startofmonth, $lte: endofmonth },
+        });
         const expense = transactions
             .filter((t) => t.type === "expense")
             .reduce((sum, t) => sum + t.amount, 0);

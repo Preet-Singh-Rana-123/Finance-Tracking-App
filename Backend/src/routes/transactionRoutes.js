@@ -43,4 +43,10 @@ transactionRouter.get(
     transactionController.getDashboardCardInfo,
 );
 
+transactionRouter.get(
+    "/get-income-expense",
+    authenticateToken,
+    transactionController.getIncomeAndExpense,
+);
+
 module.exports = transactionRouter;
