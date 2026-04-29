@@ -6,7 +6,7 @@ import { HomeCard } from "../components/HomeCard";
 import { LineChart } from "../components/LineChart";
 import { Navbar } from "../components/Navbar";
 import { TipCard } from "../components/TipCard";
-import { getCardInfo } from "../api/transactionApi";
+import { getCardInfo, getIncomeExpense } from "../api/transactionApi";
 import { getAiTip } from "../api/aiInsightApi";
 
 export const Dashboard = () => {
@@ -15,6 +15,9 @@ export const Dashboard = () => {
     const [income, setIncome] = useState(0);
     const [balance, setBalace] = useState(0);
     const [tip, setTip] = useState("Geting your tip...");
+    const [monthlyIncome, setMonthlyIncome] = useState([]);
+    const [monthlyExpense, setMonthlyExpense] = useState([]);
+    const [incomeExpenseLabel, setIncomeExpenseLabel] = useState([]);
 
     const fetchCardInfo = async () => {
         try {
@@ -24,6 +27,18 @@ export const Dashboard = () => {
             setExpense(data.expense);
             setBalace(data.balance);
             setIncome(data.income);
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    const fetchBarChartInfo = async () => {
+        try {
+            const response = await getIncomeExpense();
+            const data = response.data;
+            setMonthlyIncome(data.income);
+            setMonthlyExpense(data.expense);
+            setIncomeExpenseLabel(data.labels);
         } catch (err) {
             console.log(err);
         }
@@ -42,6 +57,7 @@ export const Dashboard = () => {
     useEffect(() => {
         fetchCardInfo();
         fetchAiTip();
+        fetchBarChartInfo();
     }, []);
 
     return (
@@ -94,7 +110,11 @@ export const Dashboard = () => {
                         Spending by Category
                     </h2>
                     <div className=" ">
-                        <BarChart />
+                        <BarChart
+                            labels={incomeExpenseLabel}
+                            income={monthlyIncome}
+                            expense={monthlyExpense}
+                        />
                     </div>
                 </div>
             </div>
