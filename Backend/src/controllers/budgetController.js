@@ -64,11 +64,9 @@ exports.getCategorySpend = async (req, res, next) => {
     try {
         const user = req.user.id;
         const budget = await Budget.find({ user: user });
-        const result = budget.map((b) => ({
-            category: b.category,
-            spent: b.spent,
-        }));
-        res.json({ result });
+        const category = budget.map((b) => b.category);
+        const spent = budget.map((b) => b.spent);
+        res.json({ category, spent });
     } catch (err) {
         console.log(err);
         res.status(500).json({ message: "internal error" });
