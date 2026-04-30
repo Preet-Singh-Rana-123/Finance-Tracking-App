@@ -101,7 +101,7 @@ export const Dashboard = () => {
                         Spending by Category
                     </h2>
                     <div className=" ">
-                        <LineChart />
+                        <LineChart labels={incomeExpenseLabel} expense={monthlyExpense} />
                     </div>
                 </div>
 

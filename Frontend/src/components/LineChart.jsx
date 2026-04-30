@@ -1,12 +1,12 @@
 import { Line } from 'react-chartjs-2';
 
-export const LineChart = () => {
+export const LineChart = ({labels, expense}) => {
   const data = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+    labels: labels,
     datasets: [
       {
         label: 'Expenses',
-        data: [500, 700, 600, 800, 750, 900],
+        data: expense,
         borderColor: '#22c55e',
         backgroundColor: '#86efac',
         fill: true,
