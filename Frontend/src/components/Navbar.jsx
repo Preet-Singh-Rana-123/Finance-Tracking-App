@@ -1,4 +1,7 @@
+import { useSelector } from "react-redux";
+
 export const Navbar = () => {
+    const user = useSelector((state) => state.auth.user);
     return (
         <>
             <div className="flex justify-between p-[1rem] shadow-md bg-gray-50 rounded-xl">
@@ -28,7 +31,7 @@ export const Navbar = () => {
                         className="hover:bg-gray-300 p-2 px-4 rounded-xl duration-300"
                         href="/login"
                     >
-                        Login
+                        {user ? "Logout" : "Login"}
                     </a>
                 </div>
             </div>
