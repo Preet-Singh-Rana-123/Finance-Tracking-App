@@ -19,3 +19,8 @@ export const deleteBudgetApt = (id) => {
     const res = api.delete(`/budget/${id}`);
     return res;
 }
+
+export const getCategorySpent = () => {
+    const res = api.get('/budget/get-cetegory-spent');
+    return res;
+}

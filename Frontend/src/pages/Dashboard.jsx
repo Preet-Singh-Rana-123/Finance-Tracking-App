@@ -8,6 +8,7 @@ import { Navbar } from "../components/Navbar";
 import { TipCard } from "../components/TipCard";
 import { getCardInfo, getIncomeExpense } from "../api/transactionApi";
 import { getAiTip } from "../api/aiInsightApi";
+import { getCategorySpent } from "../api/budgetApi";
 
 export const Dashboard = () => {
     const [budget, setBudget] = useState(0);
@@ -18,11 +19,25 @@ export const Dashboard = () => {
     const [monthlyIncome, setMonthlyIncome] = useState([]);
     const [monthlyExpense, setMonthlyExpense] = useState([]);
     const [incomeExpenseLabel, setIncomeExpenseLabel] = useState([]);
+    const [category, setCategory] = useState([]);
+    const [spent, setSpent] = useState([]);
+
+    const fetchCategorySpent = async () => {
+        try {
+            const response = await getCategorySpent();
+            const data = response.data;
+            setCategory(data.category);
+            setSpent(data.spent);
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
     const fetchCardInfo = async () => {
         try {
             const response = await getCardInfo();
             const data = response.data;
+            console.log(data);
             setBudget(data.budget);
             setExpense(data.expense);
             setBalace(data.balance);
@@ -58,6 +73,7 @@ export const Dashboard = () => {
         fetchCardInfo();
         fetchAiTip();
         fetchBarChartInfo();
+        fetchCategorySpent();
     }, []);
 
     return (
@@ -91,7 +107,7 @@ export const Dashboard = () => {
                     Spending by Category
                 </h2>
                 <div className="w-fit h-[450px] ">
-                    <DoughnutChart />
+                    <DoughnutChart category={category} spent={spent} />
                 </div>
             </div>
 
