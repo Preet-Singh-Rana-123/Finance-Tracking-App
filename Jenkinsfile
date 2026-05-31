@@ -1,51 +1,59 @@
 pipeline {
-    // Tell Jenkins to spin up an agent that already has the Docker CLI pre-installed
-    agent {
-        docker {
-            image 'docker:stable-dind'
-            args '--network jenkins'
-        }
-    }
+    // Run directly in the main workspace where git pulled your code
+    agent any
     
     environment {
         DOCKER_USER = 'preet0001'
         REGISTRY    = 'docker.io'
-        // This directs the inner container to talk directly to your socat container
+        // Directs the system to pipe operations through your active socat container
         DOCKER_HOST = 'tcp://socat:2375'
     }
     
     stages {
-        stage('Sanity Checkout') {
+        stage('Verify Environment') {
             steps {
-                echo 'Checking out source code...'
+                echo 'Checking workspace structure...'
+                sh 'ls -la'
+                sh 'ls -la backend'
             }
         }
-        
+
         stage('Build Production Images') {
             steps {
-                echo 'Compiling optimized Docker images...'
+                echo 'Compiling optimized Docker images via Socat Engine...'
                 script {
-                    // Because our agent image is docker:stable-dind, 'docker' is globally native!
-                    sh "docker build -t ${DOCKER_USER}/finance-backend:${BUILD_NUMBER} ./backend"
-                    sh "docker build -t ${DOCKER_USER}/finance-frontend:${BUILD_NUMBER} ./frontend"
+                    // We dynamically resolve the automatic tool installation location from your UI
+                    def dockerToolPath = tool name: 'latest', type: 'org.jenkinsci.plugins.docker.commons.tools.DockerTool'
                     
-                    sh "docker tag ${DOCKER_USER}/finance-backend:${BUILD_NUMBER} ${DOCKER_USER}/finance-backend:latest"
-                    sh "docker tag ${DOCKER_USER}/finance-frontend:${BUILD_NUMBER} ${DOCKER_USER}/finance-frontend:latest"
+                    // Force the system to append the Docker binary path directly into the running command environment
+                    withEnv(["PATH+DOCKER=${dockerToolPath}"]) {
+                        sh "docker build -t ${DOCKER_USER}/finance-backend:${BUILD_NUMBER} ./backend"
+                        sh "docker build -t ${DOCKER_USER}/finance-frontend:${BUILD_NUMBER} ./frontend"
+                        
+                        sh "docker tag ${DOCKER_USER}/finance-backend:${BUILD_NUMBER} ${DOCKER_USER}/finance-backend:latest"
+                        sh "docker tag ${DOCKER_USER}/finance-frontend:${BUILD_NUMBER} ${DOCKER_USER}/finance-frontend:latest"
+                    }
                 }
             }
         }
 
         stage('Push to Docker Hub') {
             steps {
-                echo 'Authenticating and uploading to registry...'
-                withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
-                    sh "echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin"
+                echo 'Authenticating and uploading build artifacts...'
+                script {
+                    def dockerToolPath = tool name: 'latest', type: 'org.jenkinsci.plugins.docker.commons.tools.DockerTool'
                     
-                    sh "docker push ${DOCKER_USER}/finance-backend:${BUILD_NUMBER}"
-                    sh "docker push ${DOCKER_USER}/finance-frontend:${BUILD_NUMBER}"
-                    
-                    sh "docker push ${DOCKER_USER}/finance-backend:latest"
-                    sh "docker push ${DOCKER_USER}/finance-frontend:latest"
+                    withEnv(["PATH+DOCKER=${dockerToolPath}"]) {
+                        withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                            sh "echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin"
+                            
+                            sh "docker push ${DOCKER_USER}/finance-backend:${BUILD_NUMBER}"
+                            sh "docker push ${DOCKER_USER}/finance-frontend:${BUILD_NUMBER}"
+                            
+                            sh "docker push ${DOCKER_USER}/finance-backend:latest"
+                            sh "docker push ${DOCKER_USER}/finance-frontend:latest"
+                        }
+                    }
                 }
             }
         }
@@ -53,14 +61,23 @@ pipeline {
     
     post {
         always {
-            echo 'Cleaning up environment authentication profiles...'
-            sh 'docker logout || true'
+            script {
+                try {
+                    def dockerToolPath = tool name: 'latest', type: 'org.jenkinsci.plugins.docker.commons.tools.DockerTool'
+                    withEnv(["PATH+DOCKER=${dockerToolPath}"]) {
+                        echo 'Cleaning up active session authentication tokens...'
+                        sh 'docker logout'
+                    }
+                } catch(e) {
+                    echo "Session logout skipped: ${e.message}"
+                }
+            }
         }
         success {
-            echo 'Pipeline completed successfully! Images are live on Docker Hub.'
+            echo 'Pipeline completed successfully! Frontend and Backend builds are live on Docker Hub.'
         }
         failure {
-            echo 'Pipeline failed. Check compilation logs above for errors.'
+            echo 'Pipeline execution halted. Review the compilation steps above.'
         }
     }
 }
