@@ -2,8 +2,7 @@ pipeline {
     agent any
     
     environment {
-        // Reference your Docker Hub username here
-        DOCKER_USER = 'your_dockerhub_username'
+        DOCKER_USER = 'preet0001'
         REGISTRY    = 'docker.io'
         
         // This targets your running socat container proxy on the same network
