@@ -14,7 +14,7 @@ pipeline {
             steps {
                 echo 'Checking workspace structure...'
                 sh 'ls -la'
-                sh 'ls -la backend'
+                sh 'ls -la Backend'
             }
         }
 
