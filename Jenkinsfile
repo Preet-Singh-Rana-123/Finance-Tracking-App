@@ -9,6 +9,10 @@ pipeline {
         // This targets your running socat container proxy on the same network
         DOCKER_HOST = 'tcp://socat:2375'
     }
+
+    tools {
+        dockerTool 'latest' 
+    }
     
     stages {
         stage('Sanity Checkout') {
