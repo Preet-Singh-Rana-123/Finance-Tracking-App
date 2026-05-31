@@ -27,8 +27,8 @@ pipeline {
                     
                     // Force the system to append the Docker binary path directly into the running command environment
                     withEnv(["PATH+DOCKER=${dockerToolPath}"]) {
-                        sh "docker build -t ${DOCKER_USER}/finance-backend:${BUILD_NUMBER} ./backend"
-                        sh "docker build -t ${DOCKER_USER}/finance-frontend:${BUILD_NUMBER} ./frontend"
+                        sh "docker build -t ${DOCKER_USER}/finance-backend:${BUILD_NUMBER} ./Backend"
+                        sh "docker build -t ${DOCKER_USER}/finance-frontend:${BUILD_NUMBER} ./Frontend"
                         
                         sh "docker tag ${DOCKER_USER}/finance-backend:${BUILD_NUMBER} ${DOCKER_USER}/finance-backend:latest"
                         sh "docker tag ${DOCKER_USER}/finance-frontend:${BUILD_NUMBER} ${DOCKER_USER}/finance-frontend:latest"
