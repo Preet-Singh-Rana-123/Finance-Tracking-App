@@ -46,18 +46,15 @@ pipeline {
             steps {
                 echo "📦 Patching manifests with build tag: ${BUILD_NUMBER} and deploying..."
                 script {
-                    // 1. Swap the image tag inside your deployment manifests on the fly
-                    // Looks for your image prefix and updates everything after the colon to the current build number
                     sh "sed -i 's|${DOCKER_USER}/finance-backend:.*|${DOCKER_USER}/finance-backend:${BUILD_NUMBER}|g' K8s/backend.yaml"
                     sh "sed -i 's|${DOCKER_USER}/finance-frontend:.*|${DOCKER_USER}/finance-frontend:${BUILD_NUMBER}|g' K8s/frontend.yaml"
                     
-                    // 2. Declaratively apply the updated configuration files to your Minikube cluster
-                    sh "kubectl apply -f K8s/backend.yaml"
-                    sh "kubectl apply -f K8s/frontend.yaml"
+                    // 🎯 FIX: Explicitly append the insecure skip flag validation blocks
+                    sh "kubectl apply -f K8s/backend.yaml --insecure-skip-tls-verify=true"
+                    sh "kubectl apply -f K8s/frontend.yaml --insecure-skip-tls-verify=true"
                     
-                    // 3. Track the status to ensure the rolling update completes without errors
-                    sh "kubectl rollout status deployment/finance-backend"
-                    sh "kubectl rollout status deployment/finance-frontend"
+                    sh "kubectl rollout status deployment/finance-backend --insecure-skip-tls-verify=true"
+                    sh "kubectl rollout status deployment/finance-frontend --insecure-skip-tls-verify=true"
                 }
             }
         }
