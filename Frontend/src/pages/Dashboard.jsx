@@ -81,7 +81,7 @@ export const Dashboard = () => {
             <Navbar />
             <div className="my-[2rem] flex flex-col justify-center items-center">
                 <h2 className="font-bold text-4xl text-sky-500 mb-2">
-                    Welcome to Financial Tracker App!!
+                    Welcome to FinTrack!!
                 </h2>
                 <p className="underline">
                     Track your income, expenses, and budget progress
