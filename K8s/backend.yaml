@@ -26,11 +26,11 @@ spec:
             - name: NODE_ENV
               value: "development"
 
-            - name: JWT_SECRET
+            - name: JWT_SECRET_KEY
               valueFrom:
                 secretKeyRef:
                   name: finance-secrets
-                  key: JWT_SECRET
+                  key: JWT_SECRET_KEY
             - name: MONGO_URI
               valueFrom:
                 secretKeyRef:
