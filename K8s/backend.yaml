@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: finance-backend
+  labels:
+    app: finance-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: finance-backend
+  template:
+    metadata:
+      labels:
+        app: finance-backend
+    spec:
+      containers:
+        - name: backend
+          image: preet0001/finance-backend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+          env:
+            - name: PORT
+              value: "3000"
+
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: finance-secrets
+                  key: JWT_SECRET
+            - name: MONGO_URI
+              valueFrom:
+                secretKeyRef:
+                  name: finance-secrets
+                  key: MONGO_URI
+            - name: GROQ_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: finance-secrets
+                  key: GROQ_API_KEY
+            - name: JWT_EXPIRE_TIME
+              valueFrom:
+                secretKeyRef:
+                  name: finance-secrets
+                  key: JWT_EXPIRE_TIME
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  selector:
+    app: finance-backend
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+      nodePort: 31000

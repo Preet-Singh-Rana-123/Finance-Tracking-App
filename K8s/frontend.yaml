@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: finance-frontend
+  namespace: default
+  labels:
+    app: finance-frontend
+spec:
+  selector:
+    matchLabels:
+      app: finance-frontend
+  replicas: 1
+  template:
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/default-container: finance-frontend
+      labels:
+        app: finance-frontend
+    spec:
+      containers:
+        - name: frontend
+          image: preet0001/finance-frontend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+  namespace: default
+spec:
+  selector:
+    app: finance-frontend
+  type: NodePort
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 32000
+---
+
