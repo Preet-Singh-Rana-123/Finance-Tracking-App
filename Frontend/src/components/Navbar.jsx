@@ -6,7 +6,7 @@ export const Navbar = () => {
         <>
             <div className="flex justify-between p-[1rem] shadow-md bg-gray-50 rounded-xl">
                 <h3 className="text-2xl font-bold text-blue-500">
-                    <a href="/">Finance Tracker App</a>
+                    <a href="/">FinTrack</a>
                 </h3>
                 <div className="flex gap-4 mx-4 font-semibold">
                     <a
