@@ -1,6 +1,6 @@
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const Users = require('../models/Users.js');
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const Users = require("../models/Users.js");
 
 exports.postRegister = async (req, res, next) => {
   try {
@@ -8,7 +8,7 @@ exports.postRegister = async (req, res, next) => {
 
     const existingUser = await Users.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ message: 'User already exists' });
+      return res.status(400).json({ message: "User already exists" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -21,10 +21,10 @@ exports.postRegister = async (req, res, next) => {
     });
 
     await user.save();
-    res.status(201).json({ message: 'User registered' });
+    res.status(201).json({ message: "User registered" });
   } catch (err) {
-    console.log('Error while checking auth status', err);
-    res.status(500).json({ message: 'Internal error occurred' });
+    console.log("Error while checking auth status", err);
+    res.status(500).json({ message: "Internal error occurred" });
   }
 };
 
@@ -34,12 +34,12 @@ exports.postLogin = async (req, res, next) => {
     const user = await Users.findOne({ email });
 
     if (!user) {
-      return res.status(401).json({ message: 'Invalid email or password' });
+      return res.status(401).json({ message: "Invalid email or password" });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(401).json({ message: 'Invalid email or password' });
+      return res.status(401).json({ message: "Invalid email or password" });
     }
 
     const token = jwt.sign(
@@ -48,9 +48,9 @@ exports.postLogin = async (req, res, next) => {
       { expiresIn: process.env.JWT_EXPIRE_TIME },
     );
 
-    res.status(200).json({ message: 'Login successful', token });
+    res.status(200).json({ message: "Login successful", token });
   } catch (err) {
-    console.log('Error while checking auth status', err);
-    res.status(500).json({ message: 'Internal error occurred' });
+    console.log("Error while checking auth status", err);
+    res.status(500).json({ message: "Internal error occurred" });
   }
 };
