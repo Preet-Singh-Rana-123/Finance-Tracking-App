@@ -4,22 +4,21 @@ pipeline {
     environment {
         DOCKER_USER = 'preet0001'
         REGISTRY    = 'docker.io'
-        DOCKER_HOST = 'tcp://socat:2375'
+        // DOCKER_HOST is completely removed so it falls back to the native socket
     }
     
     stages {
-        stage('Verify Code Casing') {
+        stage('Verify Code Structure') {
             steps {
-                echo 'Validating case-sensitive path structures...'
+                echo 'Validating directory structures...'
                 sh 'ls -la'
             }
         }
 
         stage('Build Production Images') {
             steps {
-                echo 'Compiling optimized Docker images via native CLI binary...'
+                echo 'Compiling optimized Docker images directly via local socket...'
                 script {
-                    // Targets capitalized paths directly matching your repo
                     sh "docker build -t ${DOCKER_USER}/finance-backend:${BUILD_NUMBER} ./Backend"
                     sh "docker build -t ${DOCKER_USER}/finance-frontend:${BUILD_NUMBER} ./Frontend"
                     
@@ -51,10 +50,10 @@ pipeline {
             sh 'docker logout || true'
         }
         success {
-            echo 'Pipeline completed successfully! Build images are live on Docker Hub.'
+            echo 'Pipeline completed successfully! Native builds are live on Docker Hub.'
         }
         failure {
-            echo 'Pipeline execution halted. Review build steps.'
+            echo 'Pipeline execution halted.'
         }
     }
 }
