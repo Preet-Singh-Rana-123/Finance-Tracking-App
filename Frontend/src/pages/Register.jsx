@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { registerApi } from "../api/authApi";
 import { useNavigate } from "react-router-dom";
 
@@ -53,7 +54,9 @@ export const Register = () => {
                     &#8377;
                 </h1>
                 <h2 className="text-4xl font-bold mt-2">Create account</h2>
-                <p className="mt-1">Join us and start managing your finances better</p>
+                <p className="mt-1">
+                    Join us and start managing your finances better
+                </p>
             </div>
 
             <form
@@ -78,7 +81,9 @@ export const Register = () => {
                                     className="w-full h-full object-cover"
                                 />
                             ) : (
-                                <span className="text-gray-400 text-sm">No Image</span>
+                                <span className="text-gray-400 text-sm">
+                                    No Image
+                                </span>
                             )}
                         </div>
 
@@ -116,7 +121,10 @@ export const Register = () => {
 
                 {/* Name */}
                 <div className="flex flex-col w-[400px]">
-                    <label htmlFor="name" className="text-base mb-1 font-semibold">
+                    <label
+                        htmlFor="name"
+                        className="text-base mb-1 font-semibold"
+                    >
                         Name:
                     </label>
                     <input
@@ -133,7 +141,10 @@ export const Register = () => {
 
                 {/* Email */}
                 <div className="flex flex-col w-[400px]">
-                    <label htmlFor="email" className="text-base mb-1 font-semibold">
+                    <label
+                        htmlFor="email"
+                        className="text-base mb-1 font-semibold"
+                    >
                         Email address:
                     </label>
                     <input
@@ -150,7 +161,10 @@ export const Register = () => {
 
                 {/* Password */}
                 <div className="flex flex-col w-[400px]">
-                    <label htmlFor="password" className="text-base mb-1 font-semibold">
+                    <label
+                        htmlFor="password"
+                        className="text-base mb-1 font-semibold"
+                    >
                         Password:
                     </label>
                     <input
@@ -174,9 +188,9 @@ export const Register = () => {
                 </button>
                 <p>
                     If already have account then,{" "}
-                    <a className="text-blue-600" href="/login">
+                    <Link className="text-blue-600" to="/login">
                         Sign in
-                    </a>
+                    </Link>
                 </p>
             </form>
         </>

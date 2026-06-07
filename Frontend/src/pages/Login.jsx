@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { loginApi } from "../api/authApi";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -46,7 +47,10 @@ export const Login = () => {
             >
                 {/* Email */}
                 <div className="flex flex-col w-[400px]">
-                    <label htmlFor="email" className="text-base mb-1 font-semibold">
+                    <label
+                        htmlFor="email"
+                        className="text-base mb-1 font-semibold"
+                    >
                         Email address:
                     </label>
                     <input
@@ -63,7 +67,10 @@ export const Login = () => {
 
                 {/* Password */}
                 <div className="flex flex-col w-[400px]">
-                    <label htmlFor="password" className="text-base mb-1 font-semibold">
+                    <label
+                        htmlFor="password"
+                        className="text-base mb-1 font-semibold"
+                    >
                         Password:
                     </label>
                     <input
@@ -87,9 +94,9 @@ export const Login = () => {
                 </button>
                 <p>
                     If don't have account,{" "}
-                    <a className="text-blue-600" href="/register">
+                    <Link className="text-blue-600" to="/register">
                         Sign in
-                    </a>
+                    </Link>
                 </p>
             </form>
         </>
